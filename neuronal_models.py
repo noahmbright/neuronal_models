@@ -7,8 +7,10 @@ from scipy.integrate import solve_ivp
 # TODO add the Fitzhugh Nagumo ones from homework 4?
 # TODO add regular Fitzhugh Nagumo?
 # TODO add generic integrate with reset
-# TODO stability analysis
-# TODO frequency curves? 
+# TODO stability analysis? If yes, figure out how to do that
+# TODO F-I curves? F - other parameter curves? If yes, figure out how to do that
+# TODO fix Morris Lecar parameters
+# TODO figure out what condutances/reversal potentials should be static/instance variables
 
 class HodgkinHuxley():
 
