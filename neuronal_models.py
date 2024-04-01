@@ -4,6 +4,7 @@ from scipy.integrate import solve_ivp
 
 # stuff I can do easily
 # TODO add Izhikevich
+# TODO add Gillespie
 # TODO add generic integrate with reset
 # TODO figure out what condutances/reversal potentials should be static/instance variables
 # TODO tweak infinity functions to take a hyperpolarization parameter
