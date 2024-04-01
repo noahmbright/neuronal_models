@@ -2,18 +2,24 @@ import numpy as np
 from scipy.integrate import solve_ivp
 #from typing import override
 
-# TODO make phi sophisticated
+# stuff I can do easily
 # TODO add Izhikevich
-# TODO add the Fitzhugh Nagumo ones from homework 4?
-# TODO add regular Fitzhugh Nagumo?
 # TODO add generic integrate with reset
-# TODO stability analysis? If yes, figure out how to do that
-# TODO F-I curves? F - other parameter curves? If yes, figure out how to do that
-# TODO fix Morris Lecar parameters
 # TODO figure out what condutances/reversal potentials should be static/instance variables
 # TODO tweak infinity functions to take a hyperpolarization parameter
 # and you would add that by subtracting off the hyperpolarization in both alpha and beta right?
 # TODO add a generic current input function pointer 
+# TODO allow clamping for infinity functions in case you're asked to make alpha inf big or something
+
+#stuff I don't know how to do
+# TODO make phi sophisticated
+# TODO stability analysis? If yes, figure out how to do that
+# TODO F-I curves? F - other parameter curves? If yes, figure out how to do that
+# TODO fix Morris Lecar parameters - what is right?
+
+# stuff I could do if asked
+# TODO add the Fitzhugh Nagumo ones from homework 4?
+# TODO add regular Fitzhugh Nagumo?
 
 class HodgkinHuxley():
 
