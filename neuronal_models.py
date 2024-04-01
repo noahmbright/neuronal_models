@@ -11,6 +11,9 @@ from scipy.integrate import solve_ivp
 # TODO F-I curves? F - other parameter curves? If yes, figure out how to do that
 # TODO fix Morris Lecar parameters
 # TODO figure out what condutances/reversal potentials should be static/instance variables
+# TODO tweak infinity functions to take a hyperpolarization parameter
+# and you would add that by subtracting off the hyperpolarization in both alpha and beta right?
+# TODO add a generic current input function pointer 
 
 class HodgkinHuxley():
 
