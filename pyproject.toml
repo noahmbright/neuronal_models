@@ -1,8 +1,6 @@
 [build-system]
-build-backend = 'mesonpy'
-requires = [
-    "meson-python"
-]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "pittmath3370"
@@ -20,5 +18,5 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/noahmbright/pittmath3370"
+Repository = "https://github.com/noahmbright/pittmath3370"
 Issues = "https://github.com/noahmbright/pittmath3370/issues"
