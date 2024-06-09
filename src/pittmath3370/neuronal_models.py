@@ -1,21 +1,19 @@
 import numpy as np
 from scipy.integrate import solve_ivp
+from abc import ABC, abstractmethod
 # from typing import override
 
+import helper_functions
+
+
 # stuff I can do easily
-# TODO add Izhikevich
-# TODO add Gillespie
-# TODO add generic integrate with reset
-# TODO figure out what condutances/reversal potentials should be static/instance variables
 # TODO tweak infinity functions to take a hyperpolarization parameter
 # and you would add that by subtracting off the hyperpolarization in both alpha and beta right?
-# TODO add a generic current input function pointer
 # TODO allow clamping for infinity functions in case you're asked to make alpha inf big or something
 
 # stuff I don't know how to do
 # TODO make phi sophisticated
 # TODO stability analysis? If yes, figure out how to do that
-# TODO F-I curves? F - other parameter curves? If yes, figure out how to do that
 # TODO fix Morris Lecar parameters - what is right?
 
 # stuff I could do if asked
@@ -23,18 +21,20 @@ from scipy.integrate import solve_ivp
 # TODO add regular Fitzhugh Nagumo?
 
 
-class NeuronalModel:
+class NeuronalModel(ABC):
     # TODO make phi do what phi is actually supposed to do
     phi = 1
 
     def __init__(self):
+        self.dimensions = 0
         self.t0 = 0
-        self.tf = 400
+        self.I0 = 0
+        self.tf = 100
         self.I_inj = lambda *args, **kwargs: 0
         self.cm = 1.0  # uF/cm^2
 
     def set_I0(self, I0):
-        self.I_inj = lambda *args, **kwargs: I0
+        self.I0 = I0
 
     def set_I_inj(self, I_inj):
         self.I_int = I_inj
@@ -47,6 +47,14 @@ class NeuronalModel:
 
     def set_cm(self, cm):
         self.cm = cm
+
+    @abstractmethod
+    @staticmethod
+    def dALLdt(t, X, self, clamp):
+        return np.array([])
+
+    def integrate(self, ics, clamp=False):
+        return solve_ivp(self.dALLdt, (self.t0, self.tf), ics, args=(self, clamp))
 
 
 class HodgkinHuxley(NeuronalModel):
@@ -61,29 +69,23 @@ class HodgkinHuxley(NeuronalModel):
         self.E_L = -54.387
 
     def alpha_m(self, V):
-        """Channel gating kinetics. Functions of membrane voltage"""
         return 0.1 * (V + 40.0) / (1.0 - np.exp(-(V + 40.0) / 10.0))
 
     def beta_m(self, V):
-        """Channel gating kinetics. Functions of membrane voltage"""
         return 4.0 * np.exp(-(V + 65.0) / 18.0)
 
     def alpha_h(self, V, hyperpolarization=0):
-        """Channel gating kinetics. Functions of membrane voltage"""
         V_half = -65.0 - hyperpolarization
         return 0.07 * np.exp(-(V - V_half) / 20.0)
 
     def beta_h(self, V, hyperpolarization=0):
-        """Channel gating kinetics. Functions of membrane voltage"""
         V_half = -35.0 - hyperpolarization
         return 1.0 / (1.0 + np.exp(-(V - V_half) / 10.0))
 
     def alpha_n(self, V):
-        """Channel gating kinetics. Functions of membrane voltage"""
         return 0.01 * (V + 55.0) / (1.0 - np.exp(-(V + 55.0) / 10.0))
 
     def beta_n(self, V):
-        """Channel gating kinetics. Functions of membrane voltage"""
         return 0.125 * np.exp(-(V + 65) / 80.0)
 
     def tau_h(self, V, hyperpolarization):
@@ -113,32 +115,25 @@ class HodgkinHuxley(NeuronalModel):
     def I_L(self, V):
         return self.g_L * (V - self.E_L)
 
-    def dVdt(self, t, V, m, n, h):
-        return (
-            self.I_inj(t) - self.I_Na(V, m, h) - self.I_K(V, n) - self.I_L(V)
-        ) / self.cm
-
     @staticmethod
     def dALLdt(t, X, self, clamp=False):
-        """
-
-        |  :param X:
-        |  :param t:
-        |  :return: calculate membrane potential & activation variables
-        """
         V, m, h, n = X
 
         if clamp:
             dVdt = 0
         else:
-            dVdt = self.dVdt(t, V, m, n, h)
+            dVdt = (
+                self.I0
+                + self.I_inj(t)
+                - self.I_Na(V, m, h)
+                - self.I_K(V, n)
+                - self.I_L(V)
+            ) / self.cm
+
         dmdt = self.alpha_m(V) * (1.0 - m) - self.beta_m(V) * m
         dhdt = self.alpha_h(V) * (1.0 - h) - self.beta_h(V) * h
         dndt = self.alpha_n(V) * (1.0 - n) - self.beta_n(V) * n
         return np.array([dVdt, dmdt, dhdt, dndt])
-
-    def integrate(self, ics=[-60, 0.09, 0.4, 0.4], clamp=False):
-        return solve_ivp(self.dALLdt, (self.t0, self.tf), ics, args=(self, clamp))
 
 
 class Rinzel(HodgkinHuxley):
@@ -158,19 +153,19 @@ class Rinzel(HodgkinHuxley):
         return self.h0 - n
 
     @staticmethod
-    def dALLdt(t, X, self, I_0=0, clamp=False):
+    def dALLdt(t, X, self, clamp=False):
         V, n = X
         if clamp:
             dVdt = 0
         else:
             dVdt = (
                 self.I_inj(t)
-                + self.I_0
+                + self.I0
                 - self.I_Na(V, self.m_inf(V), self.h(n))
                 - self.I_K(V, n)
                 - self.I_L(V)
             ) / self.cm
-            dndt = self.alpha_n(V) * (1.0 - n) - self.beta_n(V) * n
+        dndt = self.alpha_n(V) * (1.0 - n) - self.beta_n(V) * n
 
         return np.array([dVdt, dndt])
 
@@ -183,21 +178,22 @@ class Kepler(HodgkinHuxley):
         return (self.h_inf(V + dV) - self.h_inf(V - dV)) / (2 * dV)
 
     @staticmethod
-    def dALLdt(t, X, self, I_0=0, clamp=False):
+    def dALLdt(t, X, self, clamp=False):
         V, Vh = X
         if clamp:
             dVdt = 0
         else:
             dVdt = (
                 self.I_inj(t)
-                + self.I_0
+                + self.I0
                 - self.I_Na(V, self.m_inf(V), self.h_inf(Vh))
                 - self.I_K(V, self.n_inf(Vh))
                 - self.I_L(V)
             ) / self.cm
-            dVhdt = (self.h_inf(V) - self.h_inf(Vh)) / (
-                self.dh_inf(Vh) / (self.alpha_h(V) + self.beta_h(V))
-            )
+
+        dVhdt = (self.h_inf(V) - self.h_inf(Vh)) / (
+            self.dh_inf(Vh) / (self.alpha_h(V) + self.beta_h(V))
+        )
 
         return np.array([dVdt, dVhdt])
 
@@ -205,6 +201,7 @@ class Kepler(HodgkinHuxley):
 class DestexhePare(HodgkinHuxley):
     def __init__(self):
         super().__init__()
+        self.I0 = 0
         self.E_Na = 55
         self.E_k = -85
         self.g_K = 100
@@ -245,13 +242,6 @@ class DestexhePare(HodgkinHuxley):
 
     @staticmethod
     def dALLdt(t, X, self, clamp=False):
-        """
-        Integrate
-
-        |  :param X:
-        |  :param t:
-        |  :return: calculate membrane potential & activation variables
-        """
         V, m, h, n, mk = X
 
         if clamp:
@@ -259,7 +249,7 @@ class DestexhePare(HodgkinHuxley):
         else:
             dVdt = (
                 self.I_inj(t)
-                + self.I_0
+                + self.I0
                 - self.I_Na(V, m, h)
                 - self.I_K(V, n)
                 - self.I_L(V)
@@ -288,39 +278,12 @@ class MorrisLecar(HodgkinHuxley):
         self.V2 = 0.15
         self.V3 = 0.1
         self.V4 = 0.145
+        self.I0 = 0
         self.phi = 0.333
         self.gca = 1
 
     def set_phi(self, phi):
         self.phi = phi
-
-    def activate_SNIC(self):
-        self.V3 = 0.1
-        self.V4 = 1.45
-        self.gca = 1
-        self.phi = 0.333
-        self.I_0 = 0
-
-    def activate_hopf(self):
-        self.V3 = 0
-        self.V4 = 0.3
-        self.gca = 1.1
-        self.phi = 0.2
-        self.I_0 = 0
-
-    def activate_homoclinic_below_bifurcation(self):
-        self.V3 = 0.1
-        self.V4 = 0.145
-        self.gca = 1.0
-        self.phi = 1.15
-        self.I_0 = 0
-
-    def activate_homoclinic_above_bifurcation(self):
-        self.V3 = 0.1
-        self.V4 = 0.145
-        self.gca = 1.0
-        self.phi = 1.15
-        self.I_0 = 0.08
 
     def m_inf(self, V):
         return 0.5 * (1 + np.tanh((V - self.V1) / self.V2))
@@ -340,9 +303,6 @@ class MorrisLecar(HodgkinHuxley):
     def I_K(self, V, w):
         return self.gk * w * (V - self.Vk)
 
-    def dVdt(self, V, w, t):
-        return self.I_0 - self.I_K(V, w) - self.I_L(V) - self.I_Ca(V) + self.I_inj(t)
-
     def dwdt(self, V, w):
         return self.lam_n(V) * (self.n_inf(V) - w)
 
@@ -353,46 +313,7 @@ class MorrisLecar(HodgkinHuxley):
         if clamp:
             dVdt = 0
         else:
-            dVdt = self.dVdt(V, w, t)
+            dVdt = self.I0 - self.I_K(V, w) - self.I_L(V) - self.I_Ca(V) + self.I_inj(t)
         dwdt = self.dwdt(V, w)
 
         return np.array([dVdt, dwdt])
-
-
-class CoupledML(MorrisLecar):
-    def __init__(self, n):
-        super().__init__()
-        self.n = n
-        self.het = 1.0
-        self.Is = np.zeros(n)
-        self.gc = 0
-
-    def set_gc(self, gc):
-        self.gc = gc
-
-    def set_Is(self, Is):
-        assert len(Is) == self.n, "Length Is != number of coupled neurons n"
-        self.Is = Is
-
-    def dVdt(self, I0, V, w):
-        return I0 - self.I_K(V, w) - self.I_L(V) - self.I_Ca(V)
-
-    @staticmethod
-    def dALLdt(t, X, self, clamp=False):
-        Vs = X[: self.n]
-        ws = X[self.n :]
-
-        if clamp:
-            dVsdt = np.zeros(n)
-        else:
-            dVsdt = np.array([self.dVdt(I, V, w) for I, V, w in zip(self.Is, Vs, ws)])
-
-        # TODO generalize to more than two cells with a matrix or something
-        # figure out how several cells couple
-        print(f"coupling {self.gc*(Vs[1] - Vs[0])}")
-        dVsdt[0] += self.gc * (Vs[1] - Vs[0])
-        dVsdt[1] += self.gc * (Vs[0] - Vs[1]) / self.het
-
-        dwsdt = np.array([self.dwdt(V, w) for V, w in zip(Vs, ws)])
-
-        return np.concatenate((dVsdt, dwsdt))
