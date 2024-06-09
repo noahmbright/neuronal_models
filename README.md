@@ -1,4 +1,6 @@
 # Pitt MATH 3370 Mathematical Neuroscience Models
 
-Need to flesh this out and learn markdown to make it look cool. Will update
-with excessive emojis :brain:
+An collection of models for use in Pitt Math 3370 Mathematical Neuroscience.
+
+# Supported models
+### Hodgkin-Huxley
