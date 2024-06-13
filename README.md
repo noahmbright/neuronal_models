@@ -35,12 +35,6 @@ $$
 $$
 
 with the $\alpha$ and $\beta$ given by
-am(v)=phi*.1*(v+40)/(1-exp(-(v+40)/10))
-bm(v)=phi*4*exp(-(v+65)/18)
-ah(v)=phi*.07*exp(-(v+65)/20)
-bh(v)=phi*1/(1+exp(-(v+35)/10))
-an(v)=phi*.01*(v+55)/(1-exp(-(v+55)/10))
-bn(v)=phi*.125*exp(-(v+65)/80)
 
 $$
 \alpha_m(V) = \phi \times .1 \times \frac{(V + 40)}{1 - \exp\left[-(V +
@@ -60,6 +54,22 @@ $$
 \qquad
 \beta_n(V) = \phi\times0.125\exp\left[-(v + 65)/80\right]
 $$
+
+These are default values for parameterizing the $\alpha$ and $\beta$. 
+
+TBD: should these be expressed in a more generic way? 
+
+The reversal potentials and conductances default to
+
+$$
+V_{text{Na}} = 50 \quad V_{text{K}} = -77 \quad V_{text{Leak}} = -54.387
+$$
+
+$$
+g_{text{Na}} = 120 \quad g_{text{K}} = 36 \quad g_{text{Leak}} = 0.3.
+$$
+
+$c$ and $\phi$ default to 1. 
 
 ## Kepler Reduction
 
