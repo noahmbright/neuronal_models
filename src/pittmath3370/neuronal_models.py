@@ -3,7 +3,7 @@ from scipy.integrate import solve_ivp
 from abc import ABC, abstractmethod
 # from typing import override
 
-import helper_functions
+# import helper_functions
 
 
 # stuff I can do easily
@@ -30,7 +30,7 @@ class NeuronalModel(ABC):
         self.t0 = 0
         self.I0 = 0
         self.tf = 100
-        self.I_inj = lambda *args, **kwargs: 0
+        self.I_inj = lambda: 0
         self.cm = 1.0  # uF/cm^2
 
     def set_I0(self, I0):
@@ -48,17 +48,18 @@ class NeuronalModel(ABC):
     def set_cm(self, cm):
         self.cm = cm
 
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def dALLdt(t, X, self, clamp):
-        return np.array([])
+        return np.array([0.0])
 
     def integrate(self, ics, clamp=False):
         return solve_ivp(self.dALLdt, (self.t0, self.tf), ics, args=(self, clamp))
 
 
-class HodgkinHuxley(NeuronalModel):
+class AbstractHHLike(NeuronalModel):
     def __init__(self):
+        super().__init__()
         # mS/cm^2
         self.g_Na = 120.0
         self.g_K = 36.0
@@ -115,6 +116,11 @@ class HodgkinHuxley(NeuronalModel):
     def I_L(self, V):
         return self.g_L * (V - self.E_L)
 
+
+class HodgkinHuxley(AbstractHHLike):
+    def __init__(self):
+        super().__init__()
+
     @staticmethod
     def dALLdt(t, X, self, clamp=False):
         V, m, h, n = X
@@ -136,7 +142,7 @@ class HodgkinHuxley(NeuronalModel):
         return np.array([dVdt, dmdt, dhdt, dndt])
 
 
-class Rinzel(HodgkinHuxley):
+class Rinzel(AbstractHHLike):
     """
     inherit all the alpha/beta from HH
     use the approximation that h = h0 - n
@@ -170,7 +176,7 @@ class Rinzel(HodgkinHuxley):
         return np.array([dVdt, dndt])
 
 
-class Kepler(HodgkinHuxley):
+class Kepler(AbstractHHLike):
     def __init__(self):
         super().__init__()
 
@@ -198,7 +204,7 @@ class Kepler(HodgkinHuxley):
         return np.array([dVdt, dVhdt])
 
 
-class DestexhePare(HodgkinHuxley):
+class DestexhePare(NeuronalModel):
     def __init__(self):
         super().__init__()
         self.I0 = 0
@@ -262,7 +268,8 @@ class DestexhePare(HodgkinHuxley):
         return np.array([dVdt, dmdt, dhdt, dndt, dmkdt])
 
 
-class MorrisLecar(HodgkinHuxley):
+# TODO check what to inherit from
+class MorrisLecar(NeuronalModel):
     gk = 2.0
     gl = 0.5
     Vk = -0.7
