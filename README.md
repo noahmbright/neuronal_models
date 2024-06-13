@@ -11,7 +11,9 @@ Numpy, Scipy, maybe a C compiler if I get around to the stochastic coupling
 
 # Supported models
 ## Hodgkin-Huxley
-$$ x = \int $$
+\begin{equation}
+x = \int
+\end{equation}
 ## Izhikevic
 ## Integrate-and-fire
 ### Quadratic
