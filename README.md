@@ -15,8 +15,12 @@ Numpy, Scipy, maybe a C compiler if I get around to the stochastic coupling
 0.05, 0.6, 0.317)$. 
 
 The dynamics of the model are given by
+
 $$
-\frac{dV}{dt} = $$
+\frac{dV}{dt} = I_0 + I_{\text{inj}} - g_{\text{Na}}h(V - V_{\text{Na}}) m^3 -
+g_{text{K}} (V - V_{\text{K}}) n^4 - \frac 1 {c} g_{text{Leak}}(V -
+V_{text{Leak}})
+$$
 
 $$
 \frac{dm}{dt} = \alpha_{m}(V)(1 - m) - \beta_m(V)m
