@@ -43,7 +43,7 @@ an(v)=phi*.01*(v+55)/(1-exp(-(v+55)/10))
 bn(v)=phi*.125*exp(-(v+65)/80)
 
 $$
-\alpha_m(V) = \phi \times .1 \times \frac{(V + 40)}{1 - \exp\left[-(v +
+\alpha_m(V) = \phi \times .1 \times \frac{(V + 40)}{1 - \exp\left[-(V +
 40)/10\right]}
 \qquad
 \beta_m(V) = \phi\times 4 \exp\left[-(V + 65)/18\right]
@@ -52,7 +52,7 @@ $$
 $$
 \alpha_h(V) = \phi \times 0.07\exp\left[-(V + 65)/20\right]
 \qquad 
-\beta_h(V) = \phi\frac 1 {1 + \exp\left[-(V + 35)/10\right}
+\beta_h(V) = \phi\frac 1 {1 + \exp\left[-(V + 35)/10\right]}
 $$
 
 $$
