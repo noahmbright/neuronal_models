@@ -20,12 +20,15 @@ $$
 g_{text{K}} (V - V_{\text{K}}) n^4 - \frac 1 {c} g_{text{Leak}}(V -
 V_{text{Leak}})
 $$
+
 $$
 \frac{dm}{dt} = \alpha_{m}(V)(1 - m) - \beta_m(V)m
 $$
+
 $$
 \frac{dh}{dt} = \alpha_{h}(V)(1 - h) - \beta_h(V)h
 $$
+
 $$
 \frac{dn}{dt} = \alpha_{n}(V)(1 - n) - \beta_n(V)n
 $$
