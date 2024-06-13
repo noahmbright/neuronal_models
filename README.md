@@ -18,8 +18,8 @@ The dynamics of the model are given by
 
 $$
 \frac{dV}{dt} = I_0 + I_{\text{inj}} - g_{\text{Na}}h(V - V_{\text{Na}}) m^3 -
-g_{text{K}} (V - V_{\text{K}}) n^4 - \frac 1 {c} g_{text{Leak}}(V -
-V_{text{Leak}})
+g_{\text{K}} (V - V_{\text{K}}) n^4 - \frac 1 {c} g_{\text{Leak}}(V -
+V_{\text{Leak}})
 $$
 
 $$
