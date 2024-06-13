@@ -11,7 +11,7 @@ Numpy, Scipy, maybe a C compiler if I get around to the stochastic coupling
 
 # Supported models
 ## Hodgkin-Huxley
-4D model in $V, m, h, n#. Default initial conditions are $(V, m, h, n) = (-65,
+4D model in $V, m, h, n$. Default initial conditions are $(V, m, h, n) = (-65,
 0.05, 0.6, 0.317)$. 
 
 The dynamics of the model are given by
