@@ -52,7 +52,7 @@ $$
 $$
 \alpha_n(V) = \phi\times 0.01 \frac{V + 55}{\exp\left[-(V + 55)/10\right]}
 \qquad
-\beta_n(V) = \phi\times0.125\exp\left[-(v + 65)/80\right]
+\beta_n(V) = \phi\times0.125\exp\left[-(V + 65)/80\right]
 $$
 
 These are default values for parameterizing the $\alpha$ and $\beta$. 
@@ -71,13 +71,55 @@ $$
 
 $c$ and $\phi$ default to 1. 
 
+## Rinzel Reduction
+
+The Rinzel reduction of the HH model inherits the $\alpha$ and $\beta$
+functions, as well as the reversal potentials, channel conductances, $c$ and
+$\phi$. The dynamics for $V$ and $n$ are also inherited, but $h$ and $m$ are
+modeled: 
+
+$$
+\frac{dm}{dt} = \frac{\alpha_{m}(V)}{\alpha_m(V) + \beta_m(V)},
+$$
+
+$$
+h = h_0 - n.
+$$
+
+$h_0$ is a constant that defaults to 0.8.
+
 ## Kepler Reduction
 
-## Rinzel Reduction
+Where did I get these equations from? Canvas?
 
 ## Integrate-and-fire
 ### Quadratic
+
+## Destexhe-Pare
+
+
 ## Izhikevic
+
+The Izhikevic model is 2D in $u$ and $V$, with dynamics
+
+$$
+\dot V = I_0 + I_{\text{inj}} + V^2 - u,
+$$
+
+$$
+\dot u = a(bV - u).
+$$
+
+On $V$ crossing $V_{\text{threshold}}$ from below, the resetting
+
+$$
+V\to c, u \to u + d
+$$
+
+takes place. $V_{\text{threshold}}$, $a, b, c$, and $d$ are all adjustable
+member variables of the model. 
+
+
 ## Morris-Lecar
 
 # How to couple models
