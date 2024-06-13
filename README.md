@@ -17,9 +17,9 @@ Numpy, Scipy, maybe a C compiler if I get around to the stochastic coupling
 The dynamics of the model are given by
 
 $$
-\frac{dV}{dt} = I_0 + I_{\text{inj}} - g_{\text{Na}}h(V - V_{\text{Na}}) m^3 -
-g_{\text{K}} (V - V_{\text{K}}) n^4 - \frac 1 {c} g_{\text{Leak}}(V -
-V_{\text{Leak}}),
+\frac{dV}{dt} = I_0 + I_{\\text{inj}} - g_{\text{Na}}h(V - V_{\text{Na}}) m^3 -
+g_{\\text{K}} (V - V_{\text{K}}) n^4 - \frac 1 {c} g_{\text{Leak}}(V -
+V_{\\text{Leak}}),
 $$
 
 $$
@@ -62,11 +62,11 @@ TBD: should these be expressed in a more generic way?
 The reversal potentials and conductances default to
 
 $$
-V_{text{Na}} = 50 \quad V_{text{K}} = -77 \quad V_{text{Leak}} = -54.387
+V_{\text{Na}} = 50 \quad V_{\text{K}} = -77 \quad V_{\text{Leak}} = -54.387
 $$
 
 $$
-g_{text{Na}} = 120 \quad g_{text{K}} = 36 \quad g_{text{Leak}} = 0.3.
+g_{\text{Na}} = 120 \quad g_{\text{K}} = 36 \quad g_{\text{Leak}} = 0.3.
 $$
 
 $c$ and $\phi$ default to 1. 
