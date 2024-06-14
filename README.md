@@ -125,6 +125,39 @@ $$
 \beta_{m_{\text{K}}}(V)m_{\text{K}}.
 $$
 
+The sodium current is the same as HH, and the $I_{\text{Kdr}}$ of
+this model is the $I_{\text{K}}$ of HH. The new current is 
+
+$$
+I_{\text{Km}}(V,m)= g_{\text{Km}}m(V-e_{\text{K}}).
+$$
+
+Finally, the $\alpha$ and $\beta$ take on different forms:
+
+$$
+\alpha_m(V)=-.32*(V-V_t-13)/(exp(-(V-V_t-13)/4)-1)
+\quad
+\beta_m(V)=.28*(V-V_t-40)/(exp((V-V_t-40)/5)-1)
+$$
+
+$$
+\alpha_h(V)=.128*\exp(-(V-V_t-V_s-17)/18)
+\quad
+\beta_h(V)=4/(1+\exp(-(V-V_t-V_s-40)/5))
+$$
+
+$$
+\alpha_n(V)=-.032*(V-V_t-15)/(\exp(-(V-V_t-15)/5)-1)
+\quad
+\beta_n(V)=.5*\exp(-(V-V_t-10)/40)
+$$
+
+$$
+\alpha_\{text{Km}}(V)= .0001*(V+30)/(1-\exp(-(V+30)/9))
+\quad
+\beta_{\text{Km}}(V)=-.0001*(V+30)/(1-\exp((V+30)/9))
+$$
+
 ## Izhikevic
 
 The Izhikevic model is 2D in $u$ and $V$, with dynamics
