@@ -135,27 +135,27 @@ $$
 Finally, the $\alpha$ and $\beta$ take on different forms:
 
 $$
-\alpha_m(V)=-.32*(V-V_t-13)/(exp(-(V-V_t-13)/4)-1)
+\alpha_m(V)=-.32\frac{V-V_t-13}{\exp(-(V-V_t-13)/4)-1)}
 \quad
-\beta_m(V)=.28*(V-V_t-40)/(exp((V-V_t-40)/5)-1)
+\beta_m(V)=.28\frac{V-V_t-40}{\exp((V-V_t-40)/5)-1)}
 $$
 
 $$
-\alpha_h(V)=.128*\exp(-(V-V_t-V_s-17)/18)
+\alpha_h(V)=.128\exp(-(V-V_t-V_s-17)/18)
 \quad
-\beta_h(V)=4/(1+\exp(-(V-V_t-V_s-40)/5))
+\beta_h(V)=\frac 4 {1+\exp(-(V-V_t-V_s-40)/5)}
 $$
 
 $$
-\alpha_n(V)=-.032*(V-V_t-15)/(\exp(-(V-V_t-15)/5)-1)
+\alpha_n(V)=-.032\frac{V-V_t-15}{\exp(-(V-V_t-15)/5)-1}
 \quad
-\beta_n(V)=.5*\exp(-(V-V_t-10)/40)
+\beta_n(V)=.5\frac 1 {\exp(-(V-V_t-10)/40)}
 $$
 
 $$
-\alpha_\{text{Km}}(V)= .0001*(V+30)/(1-\exp(-(V+30)/9))
+\alpha_\{text{Km}}(V)= .0001\frac{V+30}{1-\exp(-(V+30)/9)}
 \quad
-\beta_{\text{Km}}(V)=-.0001*(V+30)/(1-\exp((V+30)/9))
+\beta_{\text{Km}}(V)=-.0001\frac{V+30}{1-\exp((V+30)/9)}
 $$
 
 ## Izhikevic
