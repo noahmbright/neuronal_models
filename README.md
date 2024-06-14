@@ -17,9 +17,8 @@ Numpy, Scipy, maybe a C compiler if I get around to the stochastic coupling
 The dynamics of the model are given by
 
 $$
-\frac{dV}{dt} = I_0 + I_{\\text{inj}} - g_{\text{Na}}h(V - V_{\text{Na}}) m^3 -
-g_{\\text{K}} (V - V_{\text{K}}) n^4 - \frac 1 {c} g_{\text{Leak}}(V -
-V_{\\text{Leak}}),
+c\frac{dV}{dt} = I_0 + I_{\\text{inj}} - I_{\text{Na}} - I_{\text{K}} -
+g_{\text{Leak}}(V - V_{\\text{Leak}}),
 $$
 
 $$
@@ -52,8 +51,17 @@ $$
 $$
 \alpha_n(V) = \phi\times 0.01 \frac{V + 55}{\exp\left[-(V + 55)/10\right]}
 \qquad
-\beta_n(V) = \phi\times0.125\exp\left[-(V + 65)/80\right]
+\beta_n(V) = \phi\times0.125\exp\left[-(V + 65)/80\right].
 $$
+
+Finally, the currents are given by
+$$
+I_{\text{Na}} = g_{\text{Na}}h(V - V_{\text{Na}}) m^3, 
+\quad 
+I_{\text{K}} = g_{\\text{K}} (V - V_{\text{K}}) n^4.
+$$
+
+
 
 These are default values for parameterizing the $\alpha$ and $\beta$. 
 
@@ -97,6 +105,24 @@ Where did I get these equations from? Canvas?
 
 ## Destexhe-Pare
 
+Destexhe-Pare is a 5D model in $V, m, h, n$ and $m_{\text{K}}$, with default
+initial conditions 
+
+$$
+(V, m, h, n, m_{\text{K}}) = (-73.87,0,1,0.002,0.0075).
+$$
+
+The dynamics of $m, n,$ and $h$ are the same as in $HH$, with the dynamics of
+$V$ and $m_{\text{K}}$ given by:
+
+$$
+c\frac{dV}{dt} = I_0 + I_\text{Inj}} - g_{\text{L}}(V - E_\text{L}}) -
+I_{\text{Kdr}}(V,n) - I_{\text{Na}}(V, m, h) - I_{\text{Km}}
+$$
+
+$$
+\frac{dm_{\text{K}}}{dt} = \alpha_{m_{\text{K}}}(V)(1 - m_{\text{K}}) - \beta_{m_{\text{K}}}(V)m_{\text{K}}.
+$$
 
 ## Izhikevic
 
@@ -118,6 +144,8 @@ $$
 
 takes place. $V_{\text{threshold}}$, $a, b, c$, and $d$ are all adjustable
 member variables of the model. 
+
+TODO: Need reasonable defaults.
 
 
 ## Morris-Lecar

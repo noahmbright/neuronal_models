@@ -19,14 +19,14 @@ class Izhikevic(nm.NeuronalModel):
             dvdt = 0
         else:
             dvdt = self.I0 + self.I_inj(t) + v**2.0 - u
-        dudt = self.a * (self.b * self.v - u)
+        dudt = self.a * (self.b * v - u)
         return np.array([dvdt, dudt])
 
     def v_cross(t, X, self, clamp):
         return X[0] - self.v_threshold
 
-    def integrate(self, ics, clamp=False):
-        y0 = ics
+    def integrate(self, clamp=False):
+        y0 = self.ics
         ys = np.empty((2, 0))
         ts = np.array([])
         t0 = self.t0

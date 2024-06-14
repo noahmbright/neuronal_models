@@ -15,4 +15,4 @@ class QIF(nm.NeuronalModel):
         if clamp:
             return np.array([0])
 
-        return np.array([self.E - X.item() + self.I0 + self.I_inj(t)])
+        return np.array([self.E + X.item() * X.item() + self.I0 + self.I_inj(t)])

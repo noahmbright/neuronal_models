@@ -32,6 +32,7 @@ class NeuronalModel(ABC):
         self.tf = 100
         self.I_inj = lambda: 0
         self.cm = 1.0  # uF/cm^2
+        self.ics = np.array([])
 
     def set_I0(self, I0):
         self.I0 = I0
@@ -48,13 +49,17 @@ class NeuronalModel(ABC):
     def set_cm(self, cm):
         self.cm = cm
 
+    def set_ics(self, ics):
+        self.ics = ics
+
     @staticmethod
     @abstractmethod
     def dALLdt(t, X, self, clamp):
         return np.array([0.0])
 
-    def integrate(self, ics, clamp=False):
-        return solve_ivp(self.dALLdt, (self.t0, self.tf), ics, args=(self, clamp))
+    @abstractmethod
+    def integrate(self, clamp=False):
+        return solve_ivp(self.dALLdt, (self.t0, self.tf), self.ics, args=(self, clamp))
 
 
 class AbstractHHLike(NeuronalModel):
@@ -116,10 +121,14 @@ class AbstractHHLike(NeuronalModel):
     def I_L(self, V):
         return self.g_L * (V - self.E_L)
 
+    def integrate(self, clamp=False):
+        return solve_ivp(self.dALLdt, (self.t0, self.tf), self.ics, args=(self, clamp))
+
 
 class HodgkinHuxley(AbstractHHLike):
     def __init__(self):
         super().__init__()
+        self.ics = [-65, 0.05, 0.6, 0.317]
 
     @staticmethod
     def dALLdt(t, X, self, clamp=False):
@@ -207,17 +216,16 @@ class Kepler(AbstractHHLike):
 class DestexhePare(NeuronalModel):
     def __init__(self):
         super().__init__()
-        self.I0 = 0
         self.E_Na = 55
         self.E_k = -85
         self.g_K = 100
         self.gkm = 2
+        self.V_t = -58
+        self.V_s = -10
+        self.ics = np.array([-73.87, 0, 1, 0.002, 0.0075])
 
     def set_gkm(self, gkm):
         self.gkm = gkm
-
-    V_t = -58
-    V_s = -10
 
     def alpha_m(self, V):
         return -0.32 * (V - self.V_t - 13) / (np.exp(-(V - self.V_t - 13) / 4) - 1)
