@@ -112,16 +112,17 @@ $$
 (V, m, h, n, m_{\text{K}}) = (-73.87,0,1,0.002,0.0075).
 $$
 
-The dynamics of $m, n,$ and $h$ are the same as in $HH$, with the dynamics of
+The dynamics of $m, n,$ and $h$ are the same as in HH, with the dynamics of
 $V$ and $m_{\text{K}}$ given by:
 
 $$
-c\frac{dV}{dt} = I_0 + I_\text{Inj}} - g_{\text{L}}(V - E_\text{L}}) -
+c\frac{dV}{dt} = I_0 + I_{\text{Inj}} - g_{\text{L}}(V - E_{\text{L}}) -
 I_{\text{Kdr}}(V,n) - I_{\text{Na}}(V, m, h) - I_{\text{Km}}
 $$
 
 $$
-\frac{dm_{\text{K}}}{dt} = \alpha_{m_{\text{K}}}(V)(1 - m_{\text{K}}) - \beta_{m_{\text{K}}}(V)m_{\text{K}}.
+\frac{dm_{\text{K}}}{dt} = \alpha_{m_{\text{K}}}(V)(1 - m_{\text{K}}) -
+\beta_{m_{\text{K}}}(V)m_{\text{K}}.
 $$
 
 ## Izhikevic
